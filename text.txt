@@ -1,0 +1,73 @@
+function Check-PasswordStrength {
+    param (
+        [string]$Password
+    )
+
+    $parolQuvvet= 0
+    $output = @()  
+    $errors = @() 
+
+    # Uzunluq
+    if ($Password.Length -ge 8) {
+        $parolQuvvet++
+        $output += "Uzunluq: +"
+    } else {
+        $output += "Uzunluq: -"
+        $errors += 'Daxil etdiyiniz şifrə 8-simvoldan böyük olmalıdır, yenidən cəhd edin.'
+    }
+
+    # Böyük hərflər
+    if ($Password -cmatch '[A-Z]') {
+        $parolQuvvet++
+        $output += "Böyük hərif: +"
+    } else {
+        $output += "Böyük hərif: -"
+        $errors += 'Şifrənizin daha təhlükəsiz olması üçün ən azı bir böyük hərif olmalıdır. Şifrənizə böyük hərfli simvol əlavə edin.'
+    }
+
+    # Kiçik hərflər
+    if ($Password -cmatch '[a-z]') {
+        $parolQuvvet++
+        $output += "Kiçik hərif: +"
+    } else {
+        $output += "Kiçik hərif: -"
+        $errors += 'Şifrənizin daha təhlükəsiz olması üçün ən azı bir kiçik hərif olmalıdır. Şifrənizə kiçik hərfli simvol əlavə edin.'
+    }
+
+    # Rəqəmlər
+    if ($Password -match '\d') {
+        $parolQuvvet++
+        $output += "Rəqəmlər: +"
+    } else {
+        $output += "Rəqəmlər: -"
+        $errors += 'Daxil etdiyiniz parolun daha təhlükəsiz olması üçün rəqəm olmalıdır.'
+    }
+
+    # Xüsusi simvollar
+    if ($Password -match '[!@#$%^&*(),.?":{}|<>]') {
+        $parolQuvvet++
+        $output += "Xüsusi simvollar: +"
+    } else {
+        $output += "Xüsusi simvollar: -"
+        $errors += 'Parolun daha təhlükəsizliyini təmin etmək üçün "!@#" kimi simvoldardan istifadə etsəniz daha güclü parol əldə edəcəksiniz.'
+    }
+
+    
+    foreach ($line in $output) {
+        Write-Host $line
+    }
+
+    # Təklifləri çap et
+    if ($errors.Count -gt 0) {
+        Write-Host "Şifrənizi yaxşılaşdırmaq üçün təkliflər:"
+        foreach ($error in $errors) {
+            Write-Host "- $error"
+        }
+    } else {
+        Write-Host "Şifrəniz güclüdür!"
+    }
+}
+
+# Test üçün nümunə
+$Password = Read-Host "Şifrəni daxil edin"
+Check-PasswordStrength -Password $Password
